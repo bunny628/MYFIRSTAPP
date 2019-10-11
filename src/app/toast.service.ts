@@ -19,7 +19,7 @@ export class toastsService {
   showSuccess(text: string){
     this.show(text, {
       autohide: true,
-      className: "p-0 m-0 text-center bg-success text-light",
+      className: "p-1 text-center bg-success text-light float-right",
       delay: 5000
     });
   }

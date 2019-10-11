@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <h1>Welcome !</h1>
+  <h1 class="text-center">To Do Project</h1>
 </div>
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark sticky-top">
@@ -11,15 +11,15 @@
 </nav>
 
 <div class="position-absolute toast-settings">
-    <ngb-toast
-      *ngFor="let toast of toastService.toasts"
-      [class]="toast.className"
-      [autohide]="true"
-      [delay]="toast.delay"
-      (hide)="toastService.remove(toast)"
-    >
-      {{ toast.text}}
-    </ngb-toast>
-  </div>
-  
+  <ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    [class]="toast.className"
+    [autohide]="true"
+    [delay]="toast.delay"
+    (hide)="toastService.remove(toast)"
+  >
+    {{ toast.text }}
+  </ngb-toast>
+</div>
+
 <router-outlet></router-outlet>

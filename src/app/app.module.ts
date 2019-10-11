@@ -10,6 +10,7 @@ import { TodosModule } from './todos/todos.module';
 import { UserService } from './users/user.service';
 import { TodosService } from './todos/todos.service';
 import {  toastsService } from './toast.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {  toastsService } from './toast.service';
     UsersModule,
     TodosModule,
     NgbModule,
-    NgbToastModule
+    NgbToastModule,
+    HttpClientModule
   ],
   providers: [UserService, TodosService, toastsService],
   bootstrap: [AppComponent]

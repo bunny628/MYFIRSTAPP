@@ -1,18 +1,14 @@
-import { Injectable } from '@angular/core';
-import { Users } from './Models/users';
-import { TodosService } from '../todos/todos.service';
-import { TodosComponent } from '../todos/todos.component';
-
+import { Injectable } from "@angular/core";
+import { Users } from "./Models/users";
+import { TodosService } from "../todos/todos.service";
+import { TodosComponent } from "../todos/todos.component";
+import { HttpClient } from "@angular/common/http";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
-
 export class UserService {
-
-  constructor() { }                    
-
-  
   userData = [
     {
       id: "1234",
@@ -86,45 +82,70 @@ export class UserService {
     }
   ];
 
-  getUserData(): Users[]{
+  getUserData(): Users[] {
     return this.userData;
   }
 
-  loadUserData(page: number, pageSize: number): Users[]{
+  // addUser(user: Users): Users {
+  //   let id = (
+  //     parseInt(this.userData[this.userData.length - 1].id) + 1
+  //   ).toString();
+  //   user.id = id;
+  //   this.userData.push(user);
+
+  //   return user;
+  // }
+
+  // getById(id: string) {
+  //   const userFound = this.userData.filter(user => {
+  //     return (user.id = id);
+  //   });
+  //   return userFound[0];
+  // }
+
+  // updateUser(user: Users): Users {
+  //   const found = this.getById(user.id);
+  //   found.firstName = user.firstName;
+  //   found.lastName = user.lastName;
+  //   found.occupation = user.occupation;
+  //   found.profilePicture = user.profilePicture;
+  //   return found;
+  // }
+
+  // deleteUser(id: string): Users {
+  //   const userId = this.getById(id);
+  //   const index = this.userData.indexOf(userId);
+  //   return userId ? this.userData.splice(index, 1)[0] : null;
+  // }
+
+  private baseUrl = 'http://localhost:8080/users';
+
+  constructor(private http: HttpClient) { }
+
+  getUser(id: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}`);
+  }
+
+  createUser(user: Object): Observable<Object> {
+    return this.http.post(`${this.baseUrl}`, user);
+  }
+
+  updateUser(id: string, value: any): Observable<Object> {
+    return this.http.put(`${this.baseUrl}/${id}`, value);
+  }
+
+  deleteUser(id: string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
+  }
+
+  getUsersList(): Observable<Users[]> {
+    return this.http.get<Users[]>(`${this.baseUrl}`);
+  }
+
+  loadUserData(page: number, pageSize: number): Users[] {
     --page;
-    return this.userData.slice(page * pageSize, (page +1) * pageSize);
+    return this.userData.slice(page * pageSize, (page + 1) * pageSize);
   }
 
-  addUser(user: Users): Users{
-    let id = (parseInt(this.userData[this.userData.length - 1].id)+1).toString();
-    user.id = id;
-    this.userData.push(user);
-    
-    return user;
-
-  }
-
-  getById(id: string){
-    const userFound = this.userData.filter(user => {
-      return user.id = id;
-    })
-    return userFound[0];
-  }
-
-  updateUser(user: Users): Users{
-    const found = this.getById(user.id);
-    found.firstName = user.firstName;
-    found.lastName = user.lastName;
-    found.occupation = user.occupation;
-    found.profilePicture = user.profilePicture;
-    return found;
-  }
-
-  deleteUser(id: string): Users{
-    const userId = this.getById(id);
-    const index = this.userData.indexOf(userId);
-    return userId ? this.userData.splice(index,1)[0]: null;
-  }
-
-
+  
 }

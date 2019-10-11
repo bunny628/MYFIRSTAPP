@@ -3,7 +3,11 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UpdateUserComponent } from "./update-user/update-user.component";
 import { DeleteUserComponent } from "./delete-user/delete-user.component";
 import { UserService } from "./user.service";
-import { Users } from './Models/users';
+import { Users } from "./Models/users";
+import { ThrowStmt } from "@angular/compiler";
+import { ActivatedRoute, Router, Params } from "@angular/router";
+import { error } from "util";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-users",
@@ -11,8 +15,7 @@ import { Users } from './Models/users';
   styleUrls: ["./users.component.scss"]
 })
 export class UsersComponent implements OnInit {
-  userData: any[];
-  title = "my-app";
+  userData: Users[];
 
   searchText: string;
 
@@ -22,7 +25,12 @@ export class UsersComponent implements OnInit {
 
   filteredData: any[];
 
-  constructor(private addModal: NgbModal, private userService: UserService) {
+  constructor(
+    private addModal: NgbModal,
+    private userService: UserService,
+    private active: ActivatedRoute,
+    private router: Router
+  ) {
     // this.filteredData = this.userService.getUserData();
   }
   ngOnInit() {
@@ -48,19 +56,37 @@ export class UsersComponent implements OnInit {
   onUpdate(user: Users) {
     const modal = this.addModal.open(UpdateUserComponent);
     modal.componentInstance.user = user;
+    modal.result.then( () => {
+    this.getUserData();
+    })
   }
 
   onDelete(user: Users) {
     const modal = this.addModal.open(DeleteUserComponent);
     modal.componentInstance.user = user;
+    modal.result.then(() =>{
+      this.getUserData();
+    })
+    
+  }
 
-    console.log(user);
+  // onDelete(id:number){
+  //   this.userService.deleteUser(id).subscribe(data=>{
+  //     console.log(data);
+  //     this.reloadData();
+  //   }, error => console.log(error));
+  // }
+
+  userDetails(id: number) {
+    this.router.navigate(["details", id]);
   }
 
   getUserData() {
-    this.userData = this.userService.loadUserData(this.page, this.pageSize);
-    this.filteredData = this.userData;
-    this.itemLength = this.userService.getUserData().length;
+    this.userService.getUsersList().subscribe(response =>{
+      this.userData = response;
+      this.filteredData = this.userData;
+    this.itemLength = this.userData.length;
+    })
   }
 
   pageChange(event) {
